@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using dotnet_rpg.Models;
+using dotnet_rpg.Dtos.Character;
 
 namespace dotnet_rpg.Services.CharacterService
 {
@@ -8,10 +9,10 @@ namespace dotnet_rpg.Services.CharacterService
     {
         //Task implements Asynchronous calls, so you are not locking up threads.
 
-         Task<ServiceResponse<List<Character>>> GetAllCharacters();
+         Task<ServiceResponse<List<GetCharacterDto>>> GetAllCharacters();
 
-         Task<ServiceResponse<Character>> GetCharacterById(int id);
+         Task<ServiceResponse<GetCharacterDto>> GetCharacterById(int id);
 
-         Task<ServiceResponse<List<Character>>> AddCharacter(Character newCharacter);
+         Task<ServiceResponse<List<GetCharacterDto>>> AddCharacter(AddCharacterDto newCharacter);
     }
 }
