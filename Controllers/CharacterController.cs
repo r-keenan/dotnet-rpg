@@ -1,5 +1,6 @@
 using dotnet_rpg.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
 
 namespace dotnet_rpg.Controllers
 {
@@ -11,21 +12,21 @@ namespace dotnet_rpg.Controllers
     {
         private static List<Character> characters = new List<Character>{
             new Character(),
-            new Character { Name = "Sam"}
+            new Character { Id = 1, Name = "Sam"}
         };
 
         //If decorater is not added, then you can get the "Ambiguous HTTP method for Action" error.
         [HttpGet("GetAll")]
         public ActionResult<List<Character>> Get()
         {
-            //status code 200
+            //status code 200 for (Ok)
             return Ok(characters);
         }
 
-        [HttpGet]
-        public ActionResult<Character> GetSingle()
+        [HttpGet("{id}")]
+        public ActionResult<Character> GetSingle(int id)
         {
-            return Ok(characters[0]);
+            return Ok(characters.FirstOrDefault( c => c.Id == id));
         }
     }
 }
