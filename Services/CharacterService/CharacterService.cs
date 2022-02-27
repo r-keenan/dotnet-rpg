@@ -7,6 +7,8 @@ using System.Linq;
 using dotnet_rpg.Dtos.Character;
 using AutoMapper;
 using System;
+using Microsoft.AspNetCore.Http;
+using System.Security.Claims;
 
 namespace dotnet_rpg.Services.CharacterService
 {
@@ -15,14 +17,21 @@ namespace dotnet_rpg.Services.CharacterService
 
         private readonly IMapper _mapper;
 
+        public IHttpContextAccessor _httpContextAccessor;
+
         private readonly DataContext _context;
 
+
         //Constructor
-        public CharacterService(IMapper mapper, DataContext context)
+        public CharacterService(IMapper mapper, DataContext context, IHttpContextAccessor httpContextAccessor)
         {
+            _httpContextAccessor = httpContextAccessor;
             _context = context;
             _mapper = mapper;
         }
+
+        // Get the current logged in user
+        private int GetUserId() => int.Parse(_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
 
         public async Task<ServiceResponse<List<GetCharacterDto>>> AddCharacter(AddCharacterDto newCharacter)
         {
@@ -34,10 +43,10 @@ namespace dotnet_rpg.Services.CharacterService
             return serviceResponse;
         }
 
-        public async Task<ServiceResponse<List<GetCharacterDto>>> GetAllCharacters(int userId)
+        public async Task<ServiceResponse<List<GetCharacterDto>>> GetAllCharacters()
         {
             var serviceResponse = new ServiceResponse<List<GetCharacterDto>>();
-            var dbCharacters = await _context.Characters.Where(c => c.User.Id == userId).ToListAsync();
+            var dbCharacters = await _context.Characters.Where(c => c.User.Id == GetUserId()).ToListAsync();
             serviceResponse.Data = dbCharacters.Select( c => _mapper.Map<GetCharacterDto>(c)).ToList();
             return serviceResponse;
         }

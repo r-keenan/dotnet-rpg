@@ -9,7 +9,7 @@ namespace dotnet_rpg.Services.CharacterService
     {
         //Task implements Asynchronous calls, so you are not locking up threads.
 
-         Task<ServiceResponse<List<GetCharacterDto>>> GetAllCharacters(int userId);
+         Task<ServiceResponse<List<GetCharacterDto>>> GetAllCharacters();
 
          Task<ServiceResponse<GetCharacterDto>> GetCharacterById(int id);
 
