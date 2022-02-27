@@ -6,6 +6,7 @@ using dotnet_rpg.Services.CharacterService;
 using dotnet_rpg.Controllers;
 using dotnet_rpg.Dtos.Character;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace dotnet_rpg.Controllers
 {
@@ -28,8 +29,9 @@ namespace dotnet_rpg.Controllers
         [HttpGet("GetAll")]
         public async Task<ActionResult<ServiceResponse<List<GetCharacterDto>>>> Get()
         {
+            int id = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
             //status code 200 for (Ok)
-            return Ok(await _characterService.GetAllCharacters());
+            return Ok(await _characterService.GetAllCharacters(id));
         }
 
         [HttpGet("{id}")]
