@@ -49,9 +49,29 @@ namespace dotnet_rpg.Services.CharacterService
         public async Task<ServiceResponse<List<GetCharacterDto>>> GetAllCharacters()
         {
             var serviceResponse = new ServiceResponse<List<GetCharacterDto>>();
+
             var dbCharacters = await _context.Characters.Where(c => c.User.Id == GetUserId()).ToListAsync();
-            serviceResponse.Data = dbCharacters.Select( c => _mapper.Map<GetCharacterDto>(c)).ToList();
+            serviceResponse.Data = dbCharacters.Select(c => _mapper.Map<GetCharacterDto>(c)).ToList();
             return serviceResponse;
+          
+        }
+
+        public async Task<ServiceResponse<List<GetCharacterDto>>> GetFiltered(int intelligenceLow, int intelligenceHigh)
+        {
+            var serviceResponse = new ServiceResponse<List<GetCharacterDto>>();
+
+            if (intelligenceLow != null && intelligenceHigh != null)
+            {
+                var dbCharacters = await _context.Characters.Where(c => c.User.Id == GetUserId() && (c.Intelligence >= intelligenceLow && c.Intelligence <= intelligenceHigh)).ToListAsync();
+                serviceResponse.Data = dbCharacters.Select(c => _mapper.Map<GetCharacterDto>(c)).ToList();
+                return serviceResponse;
+            }
+            else
+            {
+                serviceResponse.Message = "You must either search with intelligence low and intelligence high, or you need to add in no search parameters.";
+                serviceResponse.Success = false;
+                return serviceResponse;
+            }
         }
 
         public async Task<ServiceResponse<GetCharacterDto>> GetCharacterById(int id)
