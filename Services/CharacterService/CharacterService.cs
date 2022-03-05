@@ -17,7 +17,7 @@ namespace dotnet_rpg.Services.CharacterService
 
         private readonly IMapper _mapper;
 
-        public IHttpContextAccessor _httpContextAccessor;
+       private readonly IHttpContextAccessor _httpContextAccessor;
 
         private readonly DataContext _context;
 
