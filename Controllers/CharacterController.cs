@@ -34,7 +34,7 @@ namespace dotnet_rpg.Controllers
             return Ok(await _characterService.GetAllCharacters());
         }
 
-        [HttpGet("byIntelRange")]
+        [HttpGet("Filtered")]
         public async Task<ActionResult<ServiceResponse<List<GetCharacterDto>>>> GetFiltered(int intelligenceLow, int intelligenceHigh)
         {
             int id = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
