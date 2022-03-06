@@ -1,18 +1,25 @@
-# Get Base SDK Image from Microsoft
-FROM mcr.microsoft.com/dotnet/aspnet:5.0-buster-slim AS build-env
-WORKDIR /app
+#See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.
 
-# Copy the CSPROJ file and restore any dependencies
-COPY *.CSPROJ ./
-RUN dotnet restore
+#Depending on the operating system of the host machines(s) that will build or run the containers, the image specified in the FROM statement may need to be changed.
+#For more information, please see https://aka.ms/containercompat
 
-# Copy the project files and build our release
-COPY . ./
-RUN dotnet publish -c Release -o out
-
-# Generate runtime image
-FROM mcr.microsoft.com/dotnet/sdk:5.0-buster-slim
+FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
 WORKDIR /app
 EXPOSE 80
-COPY --from=build-env /app/out .
-ENTRYPOINT [ "dotnet", "DockerAPI.dll" ]
+EXPOSE 443
+
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+WORKDIR /src
+COPY ["dotnet-rpg.csproj", "."]
+RUN dotnet restore "./dotnet-rpg.csproj"
+COPY . .
+WORKDIR "/src/."
+RUN dotnet build "dotnet-rpg.csproj" -c Release -o /app/build
+
+FROM build AS publish
+RUN dotnet publish "dotnet-rpg.csproj" -c Release -o /app/publish
+
+FROM base AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+ENTRYPOINT ["dotnet", "dotnet-rpg.dll"]
