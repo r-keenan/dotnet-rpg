@@ -11,7 +11,7 @@ namespace dotnet_rpg.Services.CharacterService
 
          Task<ServiceResponse<List<GetCharacterDto>>> GetAllCharacters();
 
-        Task<ServiceResponse<List<GetCharacterDto>>> GetFiltered(int intelligenceLow, int intelligenceHigh);
+        Task<ServiceResponse<List<GetCharacterDto>>> GetFilter(int intelligenceLow, int intelligenceHigh);
 
         Task<ServiceResponse<GetCharacterDto>> GetCharacterById(int id);
 

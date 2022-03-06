@@ -26,6 +26,11 @@ namespace dotnet_rpg.Controllers
         }
 
         //If decorater is not added, then you can get the "Ambiguous HTTP method for Action" error.
+        /// <summary>
+        /// Gets the list of all Characters owned by user.
+        /// </summary>
+        /// <returns>Returns list of authenticated user's character(s).</returns>
+        // GET: api/Employee
         [HttpGet("GetAll")]
         public async Task<ActionResult<ServiceResponse<List<GetCharacterDto>>>> Get()
         {
@@ -34,12 +39,12 @@ namespace dotnet_rpg.Controllers
             return Ok(await _characterService.GetAllCharacters());
         }
 
-        [HttpGet("Filtered")]
-        public async Task<ActionResult<ServiceResponse<List<GetCharacterDto>>>> GetFiltered(int intelligenceLow, int intelligenceHigh)
+        [HttpGet("Filter")]
+        public async Task<ActionResult<ServiceResponse<List<GetCharacterDto>>>> GetFilter(int intelligenceLow, int intelligenceHigh)
         {
             int id = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
 
-            return Ok(await _characterService.GetFiltered(intelligenceLow, intelligenceHigh));
+            return Ok(await _characterService.GetFilter(intelligenceLow, intelligenceHigh));
         }
 
 

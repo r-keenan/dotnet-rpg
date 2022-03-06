@@ -56,7 +56,7 @@ namespace dotnet_rpg.Services.CharacterService
           
         }
 
-        public async Task<ServiceResponse<List<GetCharacterDto>>> GetFiltered(int intelligenceLow, int intelligenceHigh)
+        public async Task<ServiceResponse<List<GetCharacterDto>>> GetFilter(int intelligenceLow, int intelligenceHigh)
         {
             var serviceResponse = new ServiceResponse<List<GetCharacterDto>>();
 
