@@ -147,5 +147,24 @@ namespace dotnet_rpg.Services.CharacterService
             }
             return serviceResponse;
         }
+
+        public async Task<ServiceResponse<List<GetCharacterNameOnlyDto>>> GetCharacterNames()
+        {
+            var serviceResponse = new ServiceResponse<List<GetCharacterNameOnlyDto>>();
+
+            try
+            {
+                var dbCharacters = await _context.Characters.Where(c => c.User.Id == GetUserId()).ToListAsync();
+                serviceResponse.Data = dbCharacters.Select(c => _mapper.Map<GetCharacterNameOnlyDto>(c)).ToList();
+                return serviceResponse;
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.Message = ex.Message;
+                serviceResponse.Success = false;
+            }
+            return serviceResponse;
+        }
     }
+   
 }
