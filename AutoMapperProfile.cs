@@ -10,7 +10,10 @@ namespace dotnet_rpg
         {
             CreateMap<Character, GetCharacterDto>();
             CreateMap<AddCharacterDto, Character>();
-            CreateMap<Character, GetCharacterNameOnlyDto> ();
+            CreateMap<Character, GetCharacterNameOnlyDto>();
+            CreateMap<GetPagedCharacterDto, Character>();
+            CreateMap<Character, GetPagedCharacterDto>();
+
         }
     }
 }

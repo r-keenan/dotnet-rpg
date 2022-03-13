@@ -46,16 +46,44 @@ namespace dotnet_rpg.Services.CharacterService
             return serviceResponse;
         }
 
-        public async Task<ServiceResponse<List<GetCharacterDto>>> GetAllCharacters(OwnerParameters ownerParameters)
+        public async Task<GetPagedCharacterDto> GetAllCharacters(int pageNumber, int pageSize)
         {
-            var serviceResponse = new ServiceResponse<List<GetCharacterDto>>();
+            //var serviceResponse = new ServiceResponse<List<GetCharacterDto>>();
 
+            const int maxPageSize = 100;
+            
+            //if (pageSize < maxPageSize)
+            //{
+                var PageSize = (double)pageSize;
+                var pageCount = Math.Ceiling(_context.Characters.Count() / PageSize);
 
-            var dbCharacters = await _context.Characters.Where(c => c.User.Id == GetUserId()).ToListAsync();
-            var pagedCharacters = dbCharacters.OrderBy(ow => ow.Name).Skip((ownerParameters.PageNumber - 1) * ownerParameters.PageSize).Take(ownerParameters.PageSize).ToList();
-            serviceResponse.Data = pagedCharacters.Select(c => _mapper.Map<GetCharacterDto>(c)).ToList();
-            return serviceResponse;
-          
+                var dbCharacters = await _context.Characters
+                    .OrderBy(ow => ow.Name)
+                    .Skip((pageNumber - 1) * (int)PageSize)
+                    .Take((int)PageSize)
+                    .Where(c => c.User.Id == GetUserId()).ToListAsync();
+                    
+                //var pagedCharacters = dbCharacters.OrderBy(ow => ow.Name).Skip((ownerParameters.PageNumber - 1) * ownerParameters.PageSize).Take(ownerParameters.PageSize).ToList();
+                var response = new GetPagedCharacterDto
+                {
+                    Characters = dbCharacters.Select(c => _mapper.Map<GetCharacterDto>(c)).ToList(),
+                    CurrentPage = pageNumber,
+                    Pages = (int)pageCount
+                };
+
+                
+                //serviceResponse.Data = dbCharacters.Select(c => _mapper.Map<GetCharacterDto>(c)).ToList();
+            //}
+            //else
+            //{
+                //response = new GetPagedCharacterDto
+                //{
+                    //Characters = null,
+                    //CurrentPage = 0,
+                    //Pages = 0
+                //};
+            //}
+            return response;
         }
 
         public async Task<ServiceResponse<List<GetCharacterDto>>> GetFilter(int intelligenceLow, int intelligenceHigh)
