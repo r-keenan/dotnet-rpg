@@ -46,12 +46,14 @@ namespace dotnet_rpg.Services.CharacterService
             return serviceResponse;
         }
 
-        public async Task<ServiceResponse<List<GetCharacterDto>>> GetAllCharacters()
+        public async Task<ServiceResponse<List<GetCharacterDto>>> GetAllCharacters(OwnerParameters ownerParameters)
         {
             var serviceResponse = new ServiceResponse<List<GetCharacterDto>>();
 
+
             var dbCharacters = await _context.Characters.Where(c => c.User.Id == GetUserId()).ToListAsync();
-            serviceResponse.Data = dbCharacters.Select(c => _mapper.Map<GetCharacterDto>(c)).ToList();
+            var pagedCharacters = dbCharacters.OrderBy(ow => ow.Name).Skip((ownerParameters.PageNumber - 1) * ownerParameters.PageSize).Take(ownerParameters.PageSize).ToList();
+            serviceResponse.Data = pagedCharacters.Select(c => _mapper.Map<GetCharacterDto>(c)).ToList();
             return serviceResponse;
           
         }

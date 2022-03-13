@@ -32,11 +32,11 @@ namespace dotnet_rpg.Controllers
         /// <returns>Returns list of authenticated user's character(s).</returns>
         // GET: api/Employee
         [HttpGet("GetAll")]
-        public async Task<ActionResult<ServiceResponse<List<GetCharacterDto>>>> Get()
+        public async Task<ActionResult<ServiceResponse<List<GetCharacterDto>>>> Get([FromQuery] OwnerParameters ownerParameters)
         {
             int id = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
             //status code 200 for (Ok)
-            return Ok(await _characterService.GetAllCharacters());
+            return Ok(await _characterService.GetAllCharacters(ownerParameters));
         }
 
         [HttpGet("Filter")]
@@ -82,7 +82,7 @@ namespace dotnet_rpg.Controllers
             return Ok(response);
         }
 
-        [HttpGet("character-names")]
+        [HttpGet("CharacterNames")]
         public async Task<ActionResult<ServiceResponse<List<GetCharacterNameOnlyDto>>>> GetCharacterNames()
         { return Ok(await _characterService.GetCharacterNames()); }
     }
